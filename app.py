@@ -1,21 +1,22 @@
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
 import numpy as np
 import pandas as pd
 import joblib
 import tensorflow as tf
-
 from flask import Flask, render_template, request
 
-
 app = Flask(__name__)
-
-# Render 배포용 포트 대응
 PORT = int(os.environ.get("PORT", 5000))
 
-# 모델 / 전처리기 로드
+print("loading model...")
 model = tf.keras.models.load_model("fires_model.keras")
+print("model loaded")
+
+print("loading pipeline...")
 pipeline = joblib.load("preprocess_pipeline.pkl")
+print("pipeline loaded")
 
 
 @app.route("/")
@@ -28,6 +29,8 @@ def index():
 def prediction():
     if request.method == "POST":
         try:
+            print("POST /prediction start")
+
             longitude = float(request.form["longitude"])
             latitude = float(request.form["latitude"])
             month = request.form["month"]
@@ -36,6 +39,8 @@ def prediction():
             max_temp = float(request.form["max_temp"])
             max_wind_speed = float(request.form["max_wind_speed"])
             avg_wind = float(request.form["avg_wind"])
+
+            print("form parsed")
 
             input_df = pd.DataFrame([{
                 "longitude": longitude,
@@ -48,12 +53,18 @@ def prediction():
                 "avg_wind": avg_wind
             }])
 
+            print("dataframe created")
+
             transformed = pipeline.transform(input_df)
+            print("pipeline transformed")
 
             if hasattr(transformed, "toarray"):
                 transformed = transformed.toarray()
+                print("converted to dense")
 
             pred_log = model.predict(transformed, verbose=0)[0][0]
+            print("prediction done")
+
             pred_area = np.exp(pred_log) - 1
 
             if pred_area < 0:
@@ -65,6 +76,7 @@ def prediction():
             )
 
         except Exception as e:
+            print("ERROR:", str(e))
             return render_template("result.html", error=str(e))
 
     return render_template("prediction.html")
