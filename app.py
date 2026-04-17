@@ -1,22 +1,35 @@
 import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
 import numpy as np
 import pandas as pd
 import joblib
-import tensorflow as tf
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
 PORT = int(os.environ.get("PORT", 5000))
 
-print("loading model...")
-model = tf.keras.models.load_model("fires_model.keras")
-print("model loaded")
-
 print("loading pipeline...")
 pipeline = joblib.load("preprocess_pipeline.pkl")
 print("pipeline loaded")
+
+print("loading numpy weights...")
+weights = np.load("mlp_weights.npz")
+W1, b1 = weights["W1"], weights["b1"]
+W2, b2 = weights["W2"], weights["b2"]
+W3, b3 = weights["W3"], weights["b3"]
+W4, b4 = weights["W4"], weights["b4"]
+print("weights loaded")
+
+
+def relu(x):
+    return np.maximum(0, x)
+
+
+def mlp_predict(x):
+    z1 = relu(np.dot(x, W1) + b1)
+    z2 = relu(np.dot(z1, W2) + b2)
+    z3 = relu(np.dot(z2, W3) + b3)
+    y = np.dot(z3, W4) + b4
+    return y
 
 
 @app.route("/")
@@ -29,8 +42,6 @@ def index():
 def prediction():
     if request.method == "POST":
         try:
-            print("POST /prediction start")
-
             longitude = float(request.form["longitude"])
             latitude = float(request.form["latitude"])
             month = request.form["month"]
@@ -39,8 +50,6 @@ def prediction():
             max_temp = float(request.form["max_temp"])
             max_wind_speed = float(request.form["max_wind_speed"])
             avg_wind = float(request.form["avg_wind"])
-
-            print("form parsed")
 
             input_df = pd.DataFrame([{
                 "longitude": longitude,
@@ -53,18 +62,12 @@ def prediction():
                 "avg_wind": avg_wind
             }])
 
-            print("dataframe created")
-
             transformed = pipeline.transform(input_df)
-            print("pipeline transformed")
 
             if hasattr(transformed, "toarray"):
                 transformed = transformed.toarray()
-                print("converted to dense")
 
-            pred_log = model.predict(transformed, verbose=0)[0][0]
-            print("prediction done")
-
+            pred_log = mlp_predict(transformed)[0][0]
             pred_area = np.exp(pred_log) - 1
 
             if pred_area < 0:
@@ -76,7 +79,6 @@ def prediction():
             )
 
         except Exception as e:
-            print("ERROR:", str(e))
             return render_template("result.html", error=str(e))
 
     return render_template("prediction.html")
