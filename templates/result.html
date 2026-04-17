@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #333333;
+        }
+
+        .navbar {
+            padding: 14px 18px 0 18px;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            background: #5bc0de;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 3px;
+            margin-right: 4px;
+        }
+
+        .container {
+            width: 92%;
+            margin: 22px auto;
+        }
+
+        .title-box {
+            background: #dff0d8;
+            color: #3c763d;
+            padding: 18px 14px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 2px;
+            border: 1px solid #d6e9c6;
+            margin-bottom: 30px;
+        }
+
+        .result-text {
+            font-size: 13px;
+            margin: 22px 0 14px 6px;
+        }
+
+        .result-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 6px;
+            margin-bottom: 42px;
+        }
+
+        .footer {
+            font-size: 11px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-btn">Home</a>
+        <a href="/prediction" class="nav-btn">FF Prediction</a>
+    </div>
+
+    <div class="container">
+        <div class="title-box">산불 예측 결과</div>
+
+        {% if error %}
+            <div class="result-text">오류 발생:</div>
+            <div class="result-value">{{ error }}</div>
+        {% else %}
+            <div class="result-text">산불 발생 예상 면적:</div>
+            <div class="result-value">{{ pred_area }}m²</div>
+        {% endif %}
+
+        <div class="footer">© 2023810025 배나현</div>
+    </div>
+</body>
+</html>

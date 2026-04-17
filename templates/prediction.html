@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Prediction</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #333333;
+        }
+
+        .navbar {
+            padding: 14px 18px 0 18px;
+        }
+
+        .nav-btn {
+            display: inline-block;
+            background: #5bc0de;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 3px;
+            margin-right: 4px;
+        }
+
+        .container {
+            width: 92%;
+            margin: 18px auto;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 20px 0 18px 0;
+        }
+
+        form {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            border: 1px solid #cccccc;
+            border-radius: 2px;
+            font-size: 12px;
+            background: #ffffff;
+        }
+
+        .submit-btn {
+            margin-top: 14px;
+            background: #337ab7;
+            color: #ffffff;
+            border: none;
+            border-radius: 3px;
+            font-size: 12px;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        .footer {
+            font-size: 11px;
+            color: #666666;
+            margin-top: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-btn">Home</a>
+        <a href="/prediction" class="nav-btn">FF Prediction</a>
+    </div>
+
+    <div class="container">
+        <h1>Fill in the data</h1>
+
+        <form method="POST" action="/prediction">
+            <label>longitude(1~7)</label>
+            <input type="number" step="any" name="longitude" required>
+
+            <label>latitude(1~7)</label>
+            <input type="number" step="any" name="latitude" required>
+
+            <label>month(01-Jan ~ 12-Dec)</label>
+            <select name="month" required>
+                <option value="01-Jan">01-Jan</option>
+                <option value="02-Feb">02-Feb</option>
+                <option value="03-Mar">03-Mar</option>
+                <option value="04-Apr">04-Apr</option>
+                <option value="05-May">05-May</option>
+                <option value="06-Jun">06-Jun</option>
+                <option value="07-Jul">07-Jul</option>
+                <option value="08-Aug">08-Aug</option>
+                <option value="09-Sep">09-Sep</option>
+                <option value="10-Oct">10-Oct</option>
+                <option value="11-Nov">11-Nov</option>
+                <option value="12-Dec">12-Dec</option>
+            </select>
+
+            <label>day(01-mon ~ 07-sun)</label>
+            <select name="day" required>
+                <option value="01-mon">01-mon</option>
+                <option value="02-tue">02-tue</option>
+                <option value="03-wed">03-wed</option>
+                <option value="04-thu">04-thu</option>
+                <option value="05-fri">05-fri</option>
+                <option value="06-sat">06-sat</option>
+                <option value="07-sun">07-sun</option>
+            </select>
+
+            <label>avg_temp</label>
+            <input type="number" step="any" name="avg_temp" required>
+
+            <label>max_temp</label>
+            <input type="number" step="any" name="max_temp" required>
+
+            <label>max_wind_speed</label>
+            <input type="number" step="any" name="max_wind_speed" required>
+
+            <label>avg_wind</label>
+            <input type="number" step="any" name="avg_wind" required>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+
+        <div class="footer">© 2023810025 배나현</div>
+    </div>
+</body>
+</html>
